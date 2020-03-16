@@ -1,4 +1,4 @@
-const {transaction} = require('objection');
+const { transaction } = require('objection');
 const SelfServeOrder = require('../models/selfServeOrder');
 const CustomerServiceOrder = require('../models/customerServiceOrder');
 const TechnicalOrder = require('../models/technicalOrder');
@@ -30,24 +30,13 @@ async function create(orderType, details) {
                     orderableType: 'WashAndFoldOrder',
                 });
                 await trx.commit();
-                // using order as parent model.
-                const orderDetails = await Order.query()
-                .eagerAlgorithm(WashAndFoldOrder.JoinEagerAlgorithm)
-                .eager({
-                    washAndFoldOrders: true,
-                });
-                const washAndFoldOrdersDetails = await WashAndFoldOrder.query()
-                .eagerAlgorithm(WashAndFoldOrder.JoinEagerAlgorithm)
-                .eager({
-                    orders:true,
-                });
-                return {orderDetails, washAndFoldOrdersDetails};
             }
-            default: return false;
+                break;
+            default: throw ('Enter valid wash service.');
         }
 
     } catch (error) {
-        throw new Error(error);
+        throw (error);
     }
 }
 async function createOrder(req, res, next) {
